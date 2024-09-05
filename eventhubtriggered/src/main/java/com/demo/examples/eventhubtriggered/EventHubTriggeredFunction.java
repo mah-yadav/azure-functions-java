@@ -2,6 +2,7 @@ package com.demo.examples.eventhubtriggered;
 
 import com.microsoft.azure.functions.annotation.*;
 import com.microsoft.azure.functions.*;
+
 import java.util.*;
 
 /**
@@ -13,11 +14,16 @@ public class EventHubTriggeredFunction {
      */
     @FunctionName("EventHubTriggeredFunction")
     public void run(
-        @EventHubTrigger(name = "message", eventHubName = "myeventhub", connection = "<value>", consumerGroup = "$Default", cardinality = Cardinality.MANY) List<String> message,
-        final ExecutionContext context
+            @EventHubTrigger(name = "message", eventHubName = "EventHubName", connection = "EventHubConnectionString", consumerGroup = "$Default", cardinality = Cardinality.MANY) List<String> message,
+            final ExecutionContext context,
+            @BindingName("Properties") Map<String, Object> properties,
+            @BindingName("SystemProperties") Map<String, Object> systemProperties
     ) {
         context.getLogger().info("Java Event Hub trigger function executed.");
-        context.getLogger().info("Length:" + message.size());
+        context.getLogger().info("Length: " + message.size());
+        context.getLogger().info("Properties: " + properties);
+        context.getLogger().info("SystemProperties: " + systemProperties);
+
         message.forEach(singleMessage -> context.getLogger().info(singleMessage));
     }
 }
